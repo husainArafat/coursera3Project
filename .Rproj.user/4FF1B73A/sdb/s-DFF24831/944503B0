@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "coursera3script <- function(){\n  \n  ##install packages\n  install.packages(\"reshape2\")\n  library(reshape2)\n  \n  \n  ## Download and unzip data\n  urlData <- \"https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Dataset.zip\"\n  download.file(url = urlData, destfile = \"./Dataset.zip\")\n  unzip(zipfile = \"./Dataset.zip\")\n  \n  ## load into dataframes\n  subjectData1 <- read.table(file = \"./UCI HAR Dataset/test/subject_test.txt\")\n  subjectData2 <- read.table(file = \"./UCI HAR Dataset/train/subject_train.txt\")\n  xData <- read.table(file = \"./UCI HAR Dataset/test/X_test.txt\")\n  yData <- read.table(file = \"./UCI HAR Dataset/test/Y_test.txt\")\n  \n  ## combine train and test data\n  \n  subjectData <- rbind(subjectData1, subjectData2)\n  xData <- rbind(xData, read.table(file = \"./UCI HAR Dataset/train/X_train.txt\"))\n  yData <- rbind(yData, read.table(file = \"./UCI HAR Dataset/train/Y_train.txt\"))\n  \n  ## load in labels\n  xlabels <- read.table(file = \"./UCI HAR Dataset/features.txt\")\n  activityLabels <- read.table(file = \"./UCI HAR Dataset/activity_labels.txt\")\n  colnames(activityLabels) <- c(\"V1\", \"activities\")\n  ## assign labels to columns\n  colnames(xData) <- xlabels[,2]\n  colnames(yData) <- \"activityData\"\n  colnames(subjectData) <- \"subjectID\"\n  \n  ## consolidate data\n  totalData <- cbind(xData,yData, subjectData)\n  \n  ## columns to extract\n  columnsToEx <- c(\"activityData\", \"subjectID\", \"mean\", \"std\")\n  \n  ## logic of columns to keep\n  columnsToExNum <- (grepl(columnsToEx[1], colnames(totalData)) |\n                       grepl(columnsToEx[2], colnames(totalData)) |\n                       grepl(columnsToEx[3], colnames(totalData)) |\n                       grepl(columnsToEx[4], colnames(totalData)) )\n  \n  ## filter data\n  filteredData <- totalData[, columnsToExNum]\n  \n  ## merge in activity descriptions\n  filteredData <- merge(filteredData, activityLabels, by.x = \"activityData\", by.y = \"V1\")\n  \n  \n  filteredData.melted <- melt(filteredData, id = c(\"subjectID\", \"activities\"))\n  filteredData.mean <- dcast(filteredData.melted, subjectID + activities ~ variable, mean)\n  write.table(filteredData.mean, \"tidy.txt\", row.names = FALSE, quote = FALSE)\n  \n}",
+    "created" : 1506167702982.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "342687830",
+    "id" : "944503B0",
+    "lastKnownWriteTime" : 1506169326,
+    "last_content_update" : 1506169326441,
+    "path" : "C:/Users/Arafat/Desktop/Coursera/courseraProject3/tidyDataScript.R",
+    "project_path" : "tidyDataScript.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
